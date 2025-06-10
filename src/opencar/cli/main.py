@@ -14,6 +14,12 @@ from rich.table import Table
 from opencar import __version__
 from opencar.config.settings import get_settings
 
+# Import uvicorn at module level for mocking in tests
+try:
+    import uvicorn
+except ImportError:
+    uvicorn = None
+
 # Initialize console and app
 console = Console()
 app = typer.Typer(
@@ -24,6 +30,13 @@ app = typer.Typer(
 )
 
 
+def version_callback(value: bool):
+    """Version callback."""
+    if value:
+        console.print(f"[bold blue]OpenCar[/bold blue] version {__version__}")
+        raise typer.Exit(0)
+
+
 @app.callback()
 def callback(
     ctx: typer.Context,
@@ -32,13 +45,12 @@ def callback(
         "--version",
         "-v",
         help="Show version and exit",
+        callback=version_callback,
         is_eager=True,
     ),
 ) -> None:
     """OpenCar CLI - Manage autonomous vehicle perception systems."""
-    if version:
-        console.print(f"[bold blue]OpenCar[/bold blue] version {__version__}")
-        raise typer.Exit()
+    pass
 
 
 @app.command()
@@ -228,8 +240,11 @@ def serve(
     console.print(f"Workers: {workers}")
     console.print(f"Reload: {reload}")
     
+    if uvicorn is None:
+        console.print("[red]Error: uvicorn not installed. Install with 'pip install uvicorn'[/red]")
+        raise typer.Exit(1)
+    
     try:
-        import uvicorn
         uvicorn.run(
             "opencar.api.app:app",
             host=host,

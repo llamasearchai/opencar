@@ -1,6 +1,8 @@
 """Test perception models."""
 
 import pytest
+import asyncio
+import numpy as np
 
 from opencar.perception.models.detector import ObjectDetector, YOLODetector
 
@@ -22,33 +24,33 @@ class TestObjectDetector:
         assert detector.num_classes == 80
         assert detector.confidence_threshold == 0.5
         assert detector.device == "cpu"
-        assert detector.model is not None
+        assert not detector.is_initialized  # Should not be initialized yet
 
-    def test_detection(self, detector, sample_image_data):
+    @pytest.mark.asyncio
+    async def test_detection(self, detector, sample_image_data):
         """Test object detection."""
-        result = detector.detect(sample_image_data, return_time=True)
+        result = await detector.detect(sample_image_data)
         
-        assert "detections" in result
-        assert "image_size" in result
-        assert "inference_time_ms" in result
+        assert isinstance(result, list)
+        assert len(result) >= 0
         
-        assert isinstance(result["detections"], list)
-        assert len(result["detections"]) >= 0
-        assert result["inference_time_ms"] >= 0
+        # Check if detector was initialized
+        assert detector.is_initialized
 
-    def test_detection_output_format(self, detector, sample_image_data):
+    @pytest.mark.asyncio
+    async def test_detection_output_format(self, detector, sample_image_data):
         """Test detection output format."""
-        result = detector.detect(sample_image_data)
+        result = await detector.detect(sample_image_data)
         
-        for detection in result["detections"]:
+        for detection in result:
             assert "bbox" in detection
             assert "confidence" in detection
-            assert "class_id" in detection
             assert "class_name" in detection
+            assert "attributes" in detection
             
-            assert len(detection["bbox"]) == 4
+            bbox = detection["bbox"]
+            assert "x1" in bbox and "y1" in bbox and "x2" in bbox and "y2" in bbox
             assert 0 <= detection["confidence"] <= 1
-            assert detection["class_id"] >= 0
             assert isinstance(detection["class_name"], str)
 
     def test_class_name_lookup(self, detector):
@@ -64,12 +66,31 @@ class TestObjectDetector:
         name = detector._get_class_name(999)
         assert name == "class_999"
 
-    def test_yolo_detector(self, sample_image_data):
+    @pytest.mark.asyncio
+    async def test_yolo_detector(self, sample_image_data):
         """Test YOLO detector."""
         detector = YOLODetector(model_size="n", device="cpu")
-        result = detector.detect(sample_image_data)
+        result = await detector.detect(sample_image_data)
         
-        assert "detections" in result
-        assert isinstance(result["detections"], list)
+        assert isinstance(result, list)
         assert detector.model_size == "n"
-        assert detector.model["model_type"] == "yolov8n" 
+        assert detector._mock_model["model_type"] == "yolov8n"
+
+    @pytest.mark.asyncio
+    async def test_health_check(self, detector):
+        """Test health check."""
+        # Should be False before initialization
+        assert not await detector.health_check()
+        
+        # Initialize and check again
+        await detector.initialize()
+        assert await detector.health_check()
+
+    @pytest.mark.asyncio
+    async def test_reload(self, detector):
+        """Test model reload."""
+        await detector.initialize()
+        assert detector.is_initialized
+        
+        await detector.reload()
+        assert detector.is_initialized 
