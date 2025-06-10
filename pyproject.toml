@@ -92,10 +92,10 @@ ml = [
 opencar = "opencar.cli.main:app"
 
 [project.urls]
-Homepage = "https://github.com/nikjois/opencar"
-Documentation = "https://github.com/nikjois/opencar#readme"
-Repository = "https://github.com/nikjois/opencar"
-Issues = "https://github.com/nikjois/opencar/issues"
+Homepage = "https://github.com/llamasearchai/opencar"
+Documentation = "https://github.com/llamasearchai/opencar#readme"
+Repository = "https://github.com/llamasearchai/opencar"
+Issues = "https://github.com/llamasearchai/opencar/issues"
 
 [tool.setuptools.packages.find]
 where = ["src"]

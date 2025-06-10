@@ -2,9 +2,9 @@
 
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Tests](https://img.shields.io/badge/tests-passing-green.svg)](https://github.com/nikjois/opencar/actions)
-[![Coverage](https://img.shields.io/badge/coverage-53%25-orange.svg)](https://codecov.io/gh/nikjois/opencar)
-[![Docker](https://img.shields.io/badge/docker-ready-blue.svg)](https://hub.docker.com/r/nikjois/opencar)
+[![Tests](https://img.shields.io/badge/tests-passing-green.svg)](https://github.com/llamasearchai/opencar/actions)
+[![Coverage](https://img.shields.io/badge/coverage-53%25-orange.svg)](https://codecov.io/gh/llamasearchai/opencar)
+[![Docker](https://img.shields.io/badge/docker-ready-blue.svg)](https://hub.docker.com/r/llamasearchai/opencar)
 
 **OpenCar** is a production-ready autonomous vehicle perception system that combines advanced computer vision, machine learning, and AI to provide real-time object detection, scene analysis, and safety recommendations for autonomous driving applications.
 
@@ -46,15 +46,15 @@ pip install opencar
 
 #### Option 2: From source
 ```bash
-git clone https://github.com/nikjois/opencar.git
+git clone https://github.com/llamasearchai/opencar.git
 cd opencar
 pip install -e .
 ```
 
 #### Option 3: Docker
 ```bash
-docker pull nikjois/opencar:latest
-docker run -p 8000:8000 nikjois/opencar:latest
+docker pull llamasearchai/opencar:latest
+docker run -p 8000:8000 llamasearchai/opencar:latest
 ```
 
 ### Basic Usage
@@ -485,8 +485,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## Support
 
 - Email: nikjois@llamasearch.ai
-- Documentation: [GitHub README](https://github.com/nikjois/opencar#readme)
-- Issues: [GitHub Issues](https://github.com/nikjois/opencar/issues)
+- Documentation: [GitHub README](https://github.com/llamasearchai/opencar#readme)
+- Issues: [GitHub Issues](https://github.com/llamasearchai/opencar/issues)
 
 ---
 
